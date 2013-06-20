@@ -1,17 +1,21 @@
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 
-group = 'hecate'
+group = 'brewhot.weasel'
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-//	compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+	compile localGroovy()
+	
+	compile 'asm:asm:3.2'
+	compile 'asm:asm-commons:3.2'
+	
 	testCompile 'junit:junit:4.10'
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.4'
+	gradleVersion = '1.6'
 }
