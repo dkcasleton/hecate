@@ -16,7 +16,7 @@ class AsmTest {
 
 			registry.each { key, val ->
 				println key
-				val.connections.each {
+				val.dependencies.each {
 					println "\t$it.rootClass"
 				}
 			}

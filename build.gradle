@@ -13,6 +13,10 @@ dependencies {
 	compile 'asm:asm:3.2'
 	compile 'asm:asm-commons:3.2'
 	
+	compile 'it.uniroma1.dis.wsngroup.gexf4j:gexf4j:0.4.3-BETA'
+	compile 'commons-io:commons-io:2.4'
+	compile 'org.apache.commons:commons-lang3:3.1'
+	
 	testCompile 'junit:junit:4.10'
 }
 

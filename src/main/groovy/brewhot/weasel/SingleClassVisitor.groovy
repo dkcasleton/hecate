@@ -2,7 +2,6 @@ package brewhot.weasel
 
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Attribute
-import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.FieldVisitor
 import org.objectweb.asm.MethodVisitor
@@ -12,13 +11,13 @@ import brewhot.weasel.asm.EmptyAnnotationVisitor
 import brewhot.weasel.asm.EmptyFieldVisitor
 import brewhot.weasel.asm.EmptyMethodVisitor
 
-class Tracer implements ClassVisitor {
+class SingleClassVisitor implements ClassVisitor {
 
 	ClassNode node
 
 	Map<String, ClassNode> registry
 
-	public Tracer (ClassNode node, Map<String, ClassNode> registry) {
+	public SingleClassVisitor (ClassNode node, Map<String, ClassNode> registry) {
 		this.node = node
 		this.registry = registry
 	}
@@ -39,13 +38,13 @@ class Tracer implements ClassVisitor {
 		/*
 		 * Add superclass type
 		 */
-		addConnection(Type.getObjectType(superName))
+		addDependency(Type.getObjectType(superName))
 
 		/*
 		 * Add each interface type
 		 */
 		interfaces.each {
-			addConnection(Type.getObjectType(it))
+			addDependency(Type.getObjectType(it))
 		}
 	}
 
@@ -56,7 +55,7 @@ class Tracer implements ClassVisitor {
 		/*
 		 * Add annotation type
 		 */
-		addConnection(Type.getType(desc))
+		addDependency(Type.getType(desc))
 
 		return new EmptyAnnotationVisitor();
 	}
@@ -69,14 +68,6 @@ class Tracer implements ClassVisitor {
 	@Override
 	public void visitEnd() {
 		node.processed = true
-
-		println "*"
-
-		node.dependencies.each {
-			if (!it.processed) {
-				new ClassReader(it.rootClass).accept(new Tracer(it, registry), 0)
-			}
-		}
 	}
 
 	@Override
@@ -90,14 +81,14 @@ class Tracer implements ClassVisitor {
 		/*
 		 * Add field type
 		 */
-		addConnection(Type.getType(desc))
+		addDependency(Type.getType(desc))
 
 		return new EmptyFieldVisitor();
 	}
 
 	@Override
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
-		//println "Visited inner class '$name' with outer $outerName and inner $innerName"
+		println "->Visited inner class '$name' with outer $outerName and inner $innerName"
 
 		//addConnection(Type.getObjectType(name).className)
 	}
@@ -111,20 +102,20 @@ class Tracer implements ClassVisitor {
 		/*
 		 * Add the method return type
 		 */
-		addConnection(Type.getReturnType(desc))
+		addDependency(Type.getReturnType(desc))
 
 		/*
 		 * Add each argument type
 		 */
 		Type.getArgumentTypes(desc).each {
-			addConnection(it)
+			addDependency(it)
 		}
 
 		/*
 		 * Add each exception type
 		 */
 		exceptions.each {
-			addConnection(Type.getObjectType(it))
+			addDependency(Type.getObjectType(it))
 		}
 
 		return new EmptyMethodVisitor();
@@ -132,7 +123,7 @@ class Tracer implements ClassVisitor {
 
 	@Override
 	public void visitOuterClass(String owner, String name, String desc) {
-		//println "Visited outer class '$name' with owner $owner and descriptor $desc"
+		println "->Visited outer class '$name' with owner $owner and descriptor $desc"
 	}
 
 	@Override
@@ -140,7 +131,7 @@ class Tracer implements ClassVisitor {
 		// no-op
 	}
 
-	private void addConnection(Type javaType) {
+	private void addDependency(Type javaType) {
 
 		if (javaType.sort == Type.OBJECT) {
 
@@ -162,9 +153,7 @@ class Tracer implements ClassVisitor {
 				registry.put(className, connectedNode)
 			}
 
-			node.dependencies << connectedNode
-
-			println "\t$node.className is connected to $className"
+			node.dependsOn connectedNode
 		}
 	}
 }
