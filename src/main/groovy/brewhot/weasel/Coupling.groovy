@@ -1,10 +1,13 @@
 package brewhot.weasel
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true, includeFields = true)
 class Coupling<T extends Component> {
 
 	private T component
 
-	private int couplingCount = 1
+	private int couplingCount = 0
 
 	Coupling(T component) {
 		this.component = component

@@ -3,7 +3,7 @@ package brewhot.weasel;
 import org.junit.Test
 import org.objectweb.asm.ClassReader
 
-class AsmTest {
+class TracerTest {
 
 	@Test
 	public void test() {

@@ -1,6 +1,6 @@
 package brewhot.weasel;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * An individual, reusable component (category). A component can be coupled, afferently or efferently, to any other
@@ -20,25 +20,18 @@ public interface Component<T extends Component<T>> {
 	String getName();
 
 	/**
-	 * The parent of this component or {@code null} if one does not exist.
-	 * 
-	 * @return the parent component.
-	 */
-	Component<?> getParent();
-
-	/**
 	 * The set of afferently coupled components, i.e., the components that depend upon this component.
 	 * 
 	 * @return the afferent couplings.
 	 */
-	Set<Coupling<T>> getAfferentCouplings();
+	Collection<Coupling<T>> getAfferentCouplings();
 
 	/**
 	 * The set of efferently coupled components, i.e., the components that are depended upon by this component.
 	 * 
 	 * @return the efferent couplings.
 	 */
-	Set<Coupling<T>> getEfferentCouplings();
+	Collection<Coupling<T>> getEfferentCouplings();
 
 	/**
 	 * Sets {@code component} as an efferent coupling on this component.
@@ -49,11 +42,24 @@ public interface Component<T extends Component<T>> {
 	void dependsOn(T component);
 
 	/**
-	 * Sets {@code component} as an afferent coupling on this component.
+	 * The afferent coupling measure (Ca) of this component.
 	 * 
-	 * @param component
-	 *            the afferently coupled component.
+	 * @return the component's afferent coupling
 	 */
-	void responsibleFor(T component);
+	int getAfferentCoupling();
+
+	/**
+	 * The efferent coupling measure (Ce) of this component.
+	 * 
+	 * @return the component's efferent coupling.
+	 */
+	int getEfferentCoupling();
+
+	/**
+	 * The instability measure (I) of this component. This is based on the afferent and efferent coupling metrics.
+	 * 
+	 * @return the component's instability.
+	 */
+	float getInstability();
 
 }
