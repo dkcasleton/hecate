@@ -5,6 +5,8 @@ import java.util.jar.JarFile
 import org.apache.commons.lang3.StringUtils
 import org.objectweb.asm.ClassReader
 
+import brewhot.weasel.asm.ClassProcessor;
+
 
 class JarProcessor {
 

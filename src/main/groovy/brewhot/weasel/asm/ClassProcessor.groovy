@@ -1,4 +1,4 @@
-package brewhot.weasel
+package brewhot.weasel.asm
 
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Attribute
@@ -7,9 +7,7 @@ import org.objectweb.asm.FieldVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Type
 
-import brewhot.weasel.asm.EmptyAnnotationVisitor
-import brewhot.weasel.asm.EmptyFieldVisitor
-import brewhot.weasel.asm.EmptyMethodVisitor
+import brewhot.weasel.DependencyContext
 
 class ClassProcessor implements ClassVisitor {
 
@@ -24,17 +22,11 @@ class ClassProcessor implements ClassVisitor {
 	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
-		//println "Start inspection of $name"
-
 		visitedClassName = Type.getObjectType(name).className
 
 		/*
 		 * TODO: Add handling for dependencies within the signature
 		 */
-
-		//String superClassName = Type.getObjectType(superName).className
-
-		//println "Visiting class ${Type.getObjectType(name).className} which extends '$superClassName', implements $interfaces and has signature $signature"
 
 		/*
 		 * Add superclass type
@@ -51,7 +43,6 @@ class ClassProcessor implements ClassVisitor {
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		//println "Visiting annotation type '${Type.getType(desc).className}' with visible=$visible"
 
 		/*
 		 * Add annotation type
@@ -68,12 +59,11 @@ class ClassProcessor implements ClassVisitor {
 
 	@Override
 	public void visitEnd() {
-		//		node.processed = true
+		// no-op
 	}
 
 	@Override
 	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-		//println "Visited field '$name' of type '${Type.getType(desc).className}' with signature $signature"
 
 		/*
 		 * TODO: Do we care about the signature?  What is 'value' anyway?
