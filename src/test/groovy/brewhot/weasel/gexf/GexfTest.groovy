@@ -1,7 +1,9 @@
-package brewhot.weasel
+package brewhot.weasel.gexf
 
 import org.junit.Test
 
+import brewhot.weasel.DependencyContext;
+import brewhot.weasel.JarProcessor;
 import brewhot.weasel.gexf.GexfUtils
 
 class GexfTest {
