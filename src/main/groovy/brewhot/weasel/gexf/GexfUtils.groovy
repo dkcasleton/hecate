@@ -30,8 +30,6 @@ class GexfUtils {
 			}
 		}
 
-		Random random = new Random()
-
 		context.getJars().each { jar ->
 
 			Color jarColor = new ColorImpl(getRandom8Bit(), getRandom8Bit(), getRandom8Bit())
