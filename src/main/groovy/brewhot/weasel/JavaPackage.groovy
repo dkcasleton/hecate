@@ -40,4 +40,8 @@ class JavaPackage extends AbstractComponent<JavaPackage> {
 	Collection<JavaClass> getPackagedClasses() {
 		return classes.values()
 	}
+
+	boolean isCoreJava() {
+		return name.startsWith("java.") || name.startsWith("javax.")
+	}
 }

@@ -32,7 +32,7 @@ class JarProcessorTest {
 			println ""
 		}
 
-		Collection<JavaPackage> mysteryPackages = context.getPackages().findAll { !printedPackages.contains(it) && !isCoreJavaPackage(it) }
+		Collection<JavaPackage> mysteryPackages = context.getPackages().findAll { !printedPackages.contains(it) && !it.isCoreJava() }
 
 		if (!mysteryPackages.isEmpty()) {
 			println 'Unknown container:'
@@ -54,10 +54,6 @@ class JarProcessorTest {
 		p.getEfferentCouplings().each {
 			println "\t\t\t$it"
 		}
-	}
-
-	private boolean isCoreJavaPackage(JavaPackage p) {
-		return p.name.startsWith("java.") || p.name.startsWith("javax.")
 	}
 
 }
