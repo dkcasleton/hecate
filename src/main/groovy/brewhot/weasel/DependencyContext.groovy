@@ -3,16 +3,26 @@ package brewhot.weasel
 import org.apache.commons.lang3.StringUtils
 
 
+
 class DependencyContext {
 
-	Map<String, JavaJar> jars = [:]
+	Map<String, JavaJar> jars = [:].withDefault { jarName -> new JavaJar(jarName) }
 
-	Map<String, JavaPackage> packages = [:]
+	Map<String, JavaPackage> packages = [:].withDefault {packageName -> new JavaPackage(packageName) }
+
+	Map<JavaPackage, Collection<JavaJar>> packageAppearances = [:]
 
 	public void addClass(String jarName, String qualifiedClassName) {
 		JavaClass c = getJavaClass(qualifiedClassName)
 
-		getJar(jarName).addPackage(c.getJavaPackage())
+		JavaJar jar = getJar(jarName)
+
+		jar.addPackage(c.getJavaPackage())
+
+		/*
+		 * Can't use the 'withDefault' closure since it introduces the possibility of concurrent modification when building the jar dependencies
+		 */
+		packageAppearances.get(c.getJavaPackage(), []) << jar
 	}
 
 	/**
@@ -30,7 +40,13 @@ class DependencyContext {
 		dependentClass.javaPackage.dependsOn(responsibleClass.javaPackage)
 	}
 
+	/*
+	 * TODO: replace this with a method that completes the current graph and builds out the component analysis
+	 */
 	public Collection<JavaJar> getJars() {
+
+		populateJarDependencies()
+
 		return jars.values()
 	}
 
@@ -50,25 +66,11 @@ class DependencyContext {
 	}
 
 	private JavaPackage getPackage(String packageName) {
-		JavaPackage p = packages[packageName]
-
-		if (p == null) {
-			p = new JavaPackage(packageName)
-			packages.put(packageName, p)
-		}
-
-		return p
+		return packages[packageName]
 	}
 
 	private JavaJar getJar(String jarName) {
-		JavaJar jar = jars[jarName]
-
-		if (jar == null) {
-			jar = new JavaJar(jarName)
-			jars.put(jarName, jar)
-		}
-
-		return jar
+		return jars[jarName]
 	}
 
 	/*
@@ -83,5 +85,17 @@ class DependencyContext {
 	 */
 	private String getClassName(String qualifiedClassName) {
 		return StringUtils.substringAfterLast(qualifiedClassName, ".")
+	}
+
+	private void populateJarDependencies() {
+		packageAppearances.each { p, jars ->
+			p.getEfferentCouplings().each { coupling ->
+				packageAppearances[coupling.component].each { efferentJar ->
+					jars.each {
+						it.dependsOn(efferentJar)
+					}
+				}
+			}
+		}
 	}
 }

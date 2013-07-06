@@ -9,6 +9,7 @@ import it.uniroma1.dis.wsngroup.gexf4j.core.impl.StaxGraphWriter
 import it.uniroma1.dis.wsngroup.gexf4j.core.impl.viz.ColorImpl
 import it.uniroma1.dis.wsngroup.gexf4j.core.viz.Color
 import brewhot.weasel.DependencyContext
+import brewhot.weasel.JavaJar
 import brewhot.weasel.JavaPackage
 
 class GexfUtils {
@@ -25,8 +26,15 @@ class GexfUtils {
 		Map<JavaPackage, Node> packageNodes = [:]
 
 		context.getPackages().each { p ->
+
 			if (!ignoreCoreJava || !p.isCoreJava()) {
-				packageNodes.put(p, graph.createNode().setLabel(p.getName()).setColor(SUN))
+				Node n = graph.createNode().setLabel(p.getName())
+
+				if (p.isCoreJava()) {
+					n.setColor(SUN)
+				}
+
+				packageNodes.put(p, n)
 			}
 		}
 
@@ -49,15 +57,48 @@ class GexfUtils {
 			}
 		}
 
+		writeGraph(gexf, fileName)
+	}
+
+	public static void writeJarGraph(DependencyContext context, String fileName) {
+		Gexf gexf = new GexfImpl().setVisualization(true)
+
+		Graph graph = gexf.getGraph().setDefaultEdgeType(EdgeType.DIRECTED)
+
+		Map<JavaJar, Node> jarNodes = [:]
+
+		def jars = context.getJars()
+
+		jars.each { j ->
+			Color jarColor = new ColorImpl(getRandom8Bit(), getRandom8Bit(), getRandom8Bit())
+
+			jarNodes.put(j, graph.createNode().setLabel(j.getName()).setColor(jarColor))
+		}
+
+		jars.each { jar ->
+
+			Node n = jarNodes[jar]
+
+			jar.getEfferentCouplings().each { coupling ->
+				n.connectTo(jarNodes[coupling.getComponent()]).setEdgeType(EdgeType.DIRECTED).setThickness((float) coupling.getCouplingCount())
+			}
+		}
+
+		writeGraph(gexf, fileName)
+	}
+
+	private static void writeGraph(Gexf gexfGraph, String fileName) {
 		StaxGraphWriter graphWriter = new StaxGraphWriter();
 		File f = new File(fileName);
 		Writer out;
 		try {
 			out =  new FileWriter(f);
-			graphWriter.writeToStream(gexf, out, "UTF-8");
+			graphWriter.writeToStream(gexfGraph, out, "UTF-8");
 			System.out.println(f.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			out.closeQuietly()
 		}
 	}
 

@@ -13,6 +13,11 @@ abstract class AbstractComponent<T extends AbstractComponent<T>> implements Comp
 
 	private Map<String, Coupling<T>> efferentCouplings = [:]
 
+	/*
+	 * This will likely get removed
+	 */
+	private Metrics metrics = new Metrics(this);
+
 	AbstractComponent(String name) {
 		this.name = name;
 	}
@@ -44,31 +49,8 @@ abstract class AbstractComponent<T extends AbstractComponent<T>> implements Comp
 	}
 
 	@Override
-	public int getAfferentCoupling() {
-		return afferentCouplings.size()
-	}
-
-	@Override
-	public int getEfferentCoupling() {
-		return efferentCouplings.size()
-	}
-
-	@Override
-	public float getInstability() {
-		float ca = (float) getAfferentCoupling()
-		float ce = (float) getEfferentCoupling()
-
-		float totalCouplings = ca + ce
-
-		/*
-		 * An unused and empty class/interface will have no couplings, so check for division by 0.
-		 */
-		return totalCouplings > 0 ? ce/totalCouplings : 0
-	}
-
-	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("Ca", getAfferentCoupling()).append("Ce", getEfferentCoupling()).append("I", getInstability()).toString()
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("Ca", metrics.getAfferentCoupling()).append("Ce", metrics.getEfferentCoupling()).append("I", metrics.getInstability()).toString()
 	}
 
 	/**

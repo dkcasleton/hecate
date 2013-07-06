@@ -5,7 +5,7 @@ import java.util.jar.JarFile
 import org.apache.commons.lang3.StringUtils
 import org.objectweb.asm.ClassReader
 
-import brewhot.weasel.asm.ClassProcessor;
+import brewhot.weasel.asm.ClassProcessor
 
 
 class JarProcessor {
@@ -17,9 +17,10 @@ class JarProcessor {
 	}
 
 	public void process(String jarPath) {
+		process(new File(jarPath))
+	}
 
-		File file = new File(jarPath)
-
+	public void process(File file) {
 		JarFile jarFile = new JarFile(file)
 
 		jarFile.entries().each {jarEntry ->

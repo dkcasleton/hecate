@@ -41,25 +41,4 @@ public interface Component<T extends Component<T>> {
 	 */
 	void dependsOn(T component);
 
-	/**
-	 * The afferent coupling measure (Ca) of this component.
-	 * 
-	 * @return the component's afferent coupling
-	 */
-	int getAfferentCoupling();
-
-	/**
-	 * The efferent coupling measure (Ce) of this component.
-	 * 
-	 * @return the component's efferent coupling.
-	 */
-	int getEfferentCoupling();
-
-	/**
-	 * The instability measure (I) of this component. This is based on the afferent and efferent coupling metrics.
-	 * 
-	 * @return the component's instability.
-	 */
-	float getInstability();
-
 }
