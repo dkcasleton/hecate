@@ -6,7 +6,7 @@ import brewhot.weasel.DependencyContext
 
 abstract class AbstractAnalyzer {
 
-	private DependencyContext context;
+	DependencyContext context;
 
 	String visitedClassName
 

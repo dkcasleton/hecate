@@ -28,7 +28,7 @@ class GexfUtils {
 		context.getPackages().each { p ->
 
 			if (!ignoreCoreJava || !p.isCoreJava()) {
-				Node n = graph.createNode().setLabel(p.getName())
+				Node n = graph.createNode().setLabel(p.getName()).setSize(p.getAfferentCouplings().size() + 1)
 
 				if (p.isCoreJava()) {
 					n.setColor(SUN)
@@ -72,7 +72,7 @@ class GexfUtils {
 		jars.each { j ->
 			Color jarColor = new ColorImpl(getRandom8Bit(), getRandom8Bit(), getRandom8Bit())
 
-			jarNodes.put(j, graph.createNode().setLabel(j.getName()).setColor(jarColor))
+			jarNodes.put(j, graph.createNode().setLabel(j.getName()).setColor(jarColor).setSize(j.getAfferentCouplings().size()))
 		}
 
 		jars.each { jar ->
@@ -98,7 +98,7 @@ class GexfUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			out.closeQuietly()
+			out.close()
 		}
 	}
 
