@@ -2,9 +2,10 @@ package brewhot.weasel
 
 class JavaClass extends AbstractComponent<JavaClass> {
 
-	JavaPackage javaPackage
+	final JavaPackage javaPackage
 
-	JavaClass(String name) {
+	JavaClass(String name, JavaPackage javaPackage) {
 		super(name)
+		this.javaPackage = javaPackage
 	}
 }

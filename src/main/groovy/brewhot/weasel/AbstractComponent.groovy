@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle
 
 abstract class AbstractComponent<T extends AbstractComponent<T>> implements Component<T> {
 
-	private String name
+	final String name
 
 	private Map<String, Coupling<T>> afferentCouplings = [:]
 
@@ -16,15 +16,10 @@ abstract class AbstractComponent<T extends AbstractComponent<T>> implements Comp
 	/*
 	 * This will likely get removed
 	 */
-	private Metrics metrics = new Metrics(this);
+	final Metrics metrics = new Metrics(this);
 
-	AbstractComponent(String name) {
+	protected AbstractComponent(String name) {
 		this.name = name;
-	}
-
-	@Override
-	public String getName() {
-		return name
 	}
 
 	@Override

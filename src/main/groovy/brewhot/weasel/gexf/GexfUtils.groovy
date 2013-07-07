@@ -12,11 +12,13 @@ import brewhot.weasel.DependencyContext
 import brewhot.weasel.JavaJar
 import brewhot.weasel.JavaPackage
 
-class GexfUtils {
+final class GexfUtils {
 
 	private static final Color SUN = new ColorImpl(255, 255, 0)
 
 	private static final Random RANDOM_NUMBER_GENERATOR = new Random()
+
+	private GexfUtils() {}
 
 	public static void writePackageGraph(DependencyContext context, String fileName, boolean ignoreCoreJava) {
 		Gexf gexf = new GexfImpl().setVisualization(true)

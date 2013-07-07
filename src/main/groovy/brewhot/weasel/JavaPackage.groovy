@@ -5,12 +5,13 @@ import org.apache.commons.lang3.Validate
 
 /**
  * Representation of a java package.  No direct reference is made to the containing artifact since it is possible (but very bad) for a single package to exist across multiple artifacts.
- * @author SupremeCheez
+ *
+ * @author Dave Casleton
  *
  */
 class JavaPackage extends AbstractComponent<JavaPackage> {
 
-	Map<String, JavaClass> classes = [:]
+	private Map<String, JavaClass> classes = [:].withDefault { className -> new JavaClass(className, this) }
 
 	JavaPackage(String name) {
 		super(name)
@@ -23,18 +24,7 @@ class JavaPackage extends AbstractComponent<JavaPackage> {
 	 */
 	JavaClass getPackagedClass(String className) {
 		Validate.notBlank(className)
-
-		JavaClass c = classes[className]
-
-		if (c == null) {
-			c = new JavaClass(className)
-
-			c.javaPackage = this
-
-			classes.put(className, c)
-		}
-
-		return c
+		return classes[className]
 	}
 
 	Collection<JavaClass> getPackagedClasses() {

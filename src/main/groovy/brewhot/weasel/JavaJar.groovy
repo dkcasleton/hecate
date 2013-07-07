@@ -4,7 +4,7 @@ import org.apache.commons.lang3.Validate
 
 class JavaJar extends AbstractComponent<JavaJar> {
 
-	Map<String, JavaPackage> packages = [:]
+	private Map<String, JavaPackage> packages = [:]
 
 	JavaJar(String name) {
 		super(name)

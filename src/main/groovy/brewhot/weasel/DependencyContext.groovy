@@ -6,11 +6,11 @@ import org.apache.commons.lang3.StringUtils
 
 class DependencyContext {
 
-	Map<String, JavaJar> jars = [:].withDefault { jarName -> new JavaJar(jarName) }
+	private Map<String, JavaJar> jars = [:].withDefault { jarName -> new JavaJar(jarName) }
 
-	Map<String, JavaPackage> packages = [:].withDefault {packageName -> new JavaPackage(packageName) }
+	private Map<String, JavaPackage> packages = [:].withDefault {packageName -> new JavaPackage(packageName) }
 
-	Map<JavaPackage, Collection<JavaJar>> packageAppearances = [:]
+	private Map<JavaPackage, Collection<JavaJar>> packageAppearances = [:]
 
 	public void addClass(String jarName, String qualifiedClassName) {
 		JavaClass c = getJavaClass(qualifiedClassName)
