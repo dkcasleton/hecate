@@ -5,27 +5,29 @@ import org.objectweb.asm.Attribute
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.FieldVisitor
 import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 
 import brewhot.weasel.DependencyContext
 
-class ClassProcessor implements ClassVisitor {
+class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 
-	private DependencyContext context;
-
-	private String visitedClassName
-
-	public ClassProcessor(DependencyContext context) {
-		this.context = context
+	ClassAnalyzer(DependencyContext context) {
+		super(context)
 	}
 
 	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
+		/*
+		 * TODO: Use this to determine the abstractness of components (interfaces and abstract classes have the ACC_ABSTRACT flag set)
+		 */
+		//		boolean isAbstract = (access & Opcodes.ACC_ABSTRACT) != 0
+
 		visitedClassName = Type.getObjectType(name).className
 
 		/*
-		 * TODO: Add handling for dependencies within the signature
+		 * TODO: Add handling for (generic) dependencies within the signature
 		 */
 
 		/*
@@ -42,6 +44,16 @@ class ClassProcessor implements ClassVisitor {
 	}
 
 	@Override
+	public void visitSource(String source, String debug) {
+		// no-op
+	}
+
+	@Override
+	public void visitOuterClass(String owner, String name, String desc) {
+		// no-op
+	}
+
+	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 
 		/*
@@ -49,7 +61,10 @@ class ClassProcessor implements ClassVisitor {
 		 */
 		addDependency(Type.getType(desc))
 
-		return new EmptyAnnotationVisitor();
+		/*
+		 * Check for other dependencies within the annotation (like other annotations)
+		 */
+		return new AnnotationAnalyzer(context, visitedClassName);
 	}
 
 	@Override
@@ -58,8 +73,23 @@ class ClassProcessor implements ClassVisitor {
 	}
 
 	@Override
-	public void visitEnd() {
-		// no-op
+	public void visitInnerClass(String name, String outerName, String innerName, int access) {
+
+		/*
+		 * TODO: Do something useful with inner classes:
+		 * 		(1) the dependencies of private inner classes could be considered dependencies of the enclosing class
+		 * 		(2) public static nested classes could remain completely separate since they can be defined without an instance of the enclosing class
+		 */
+
+		boolean isPrivate = (access & Opcodes.ACC_PRIVATE) != 0
+		boolean isStatic = (access & Opcodes.ACC_STATIC) != 0
+
+		if (isPrivate) println "$name is a private nested class of $visitedClassName"
+		if (isStatic) println "$name is a static nested class of $visitedClassName"
+
+		//		println "->Visited inner class '$name' with outer $outerName and inner $innerName"
+
+		//addDependency(Type.getObjectType(name))
 	}
 
 	@Override
@@ -78,13 +108,6 @@ class ClassProcessor implements ClassVisitor {
 	}
 
 	@Override
-	public void visitInnerClass(String name, String outerName, String innerName, int access) {
-		//		println "->Visited inner class '$name' with outer $outerName and inner $innerName"
-
-		//addConnection(Type.getObjectType(name).className)
-	}
-
-	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		//List<String> argumentClassNames = Type.getArgumentTypes(desc).collect {"'$it.className'"}
 
@@ -98,9 +121,7 @@ class ClassProcessor implements ClassVisitor {
 		/*
 		 * Add each argument type
 		 */
-		Type.getArgumentTypes(desc).each {
-			addDependency(it)
-		}
+		Type.getArgumentTypes(desc).each { addDependency(it) }
 
 		/*
 		 * Add each exception type
@@ -113,18 +134,7 @@ class ClassProcessor implements ClassVisitor {
 	}
 
 	@Override
-	public void visitOuterClass(String owner, String name, String desc) {
-		//		println "->Visited outer class '$name' with owner $owner and descriptor $desc"
-	}
-
-	@Override
-	public void visitSource(String source, String debug) {
+	public void visitEnd() {
 		// no-op
-	}
-
-	private void addDependency(Type javaType) {
-		if (javaType.sort == Type.OBJECT) {
-			context.addDependency(visitedClassName, javaType.className)
-		}
 	}
 }

@@ -5,7 +5,7 @@ import java.util.jar.JarFile
 import org.apache.commons.lang3.StringUtils
 import org.objectweb.asm.ClassReader
 
-import brewhot.weasel.asm.ClassProcessor
+import brewhot.weasel.asm.ClassAnalyzer
 
 
 class JarProcessor {
@@ -29,7 +29,7 @@ class JarProcessor {
 
 				context.addClass(file.getName(), className)
 
-				new ClassReader(jarFile.getInputStream(jarEntry)).accept(new ClassProcessor(context), 0)
+				new ClassReader(jarFile.getInputStream(jarEntry)).accept(new ClassAnalyzer(context), 0)
 			}
 		}
 	}
