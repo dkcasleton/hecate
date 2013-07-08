@@ -34,8 +34,9 @@ class JarProcessorTest {
 			}
 		}
 
-		GexfUtils.writeJarGraph(context, "spring-context-jars.gexf")
-		GexfUtils.writePackageGraph(context, "spring-context-packages.gexf", true)
+		GexfUtils.writeJarGraph(context, "spring-context-jars2.gexf")
+		GexfUtils.writePackageGraph(context, "spring-context-packages2.gexf", true)
+		GexfUtils.writeClassGraph(context, "spring-context-classes2.gexf", true)
 	}
 
 	private void printContents(DependencyContext context) {

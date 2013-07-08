@@ -9,7 +9,7 @@ public class AnnotationAnalyzer extends AbstractAnalyzer implements AnnotationVi
 
 	AnnotationAnalyzer(DependencyContext context, String visitedClassName) {
 		super(context)
-		this.visitedClassName = visitedClassName;
+		this.visitedClassName = visitedClassName
 	}
 
 	@Override
@@ -24,12 +24,13 @@ public class AnnotationAnalyzer extends AbstractAnalyzer implements AnnotationVi
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String name, String desc) {
+
 		/*
 		 * Add annotation type
 		 */
 		addDependency(Type.getType(desc))
 
-		return this;
+		return this
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class AnnotationAnalyzer extends AbstractAnalyzer implements AnnotationVi
 		/*
 		 * Arrays of annotations?
 		 */
-		return this;
+		return this
 	}
 
 	@Override

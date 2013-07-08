@@ -9,6 +9,7 @@ import it.uniroma1.dis.wsngroup.gexf4j.core.impl.StaxGraphWriter
 import it.uniroma1.dis.wsngroup.gexf4j.core.impl.viz.ColorImpl
 import it.uniroma1.dis.wsngroup.gexf4j.core.viz.Color
 import brewhot.weasel.DependencyContext
+import brewhot.weasel.JavaClass
 import brewhot.weasel.JavaJar
 import brewhot.weasel.JavaPackage
 
@@ -18,7 +19,57 @@ final class GexfUtils {
 
 	private static final Random RANDOM_NUMBER_GENERATOR = new Random()
 
-	private GexfUtils() {}
+	private GexfUtils() {
+
+	}
+
+	public static void writeClassGraph(DependencyContext context, String fileName, boolean ignoreCoreJava) {
+		Gexf gexf = new GexfImpl().setVisualization(true)
+
+		Graph graph = gexf.getGraph().setDefaultEdgeType(EdgeType.DIRECTED)
+
+		Map<JavaClass, Node> classNodes = [:]
+
+		context.getPackages().each { p ->
+
+			if (!ignoreCoreJava || !p.isCoreJava()) {
+
+				p.getPackagedClasses().each { c ->
+					Node n = graph.createNode().setLabel(c.getName()).setSize(c.getAfferentCouplings().size() + 1)
+
+					if (c.isCoreJava()) {
+						n.setColor(SUN)
+					}
+
+					classNodes.put(c, n)
+				}
+			}
+		}
+
+		context.getJars().each { jar ->
+
+			Color jarColor = newColor()
+
+			jar.getPackages().each { p ->
+
+				p.getPackagedClasses().each { c ->
+
+					Node n = classNodes[c]
+
+					n.setColor(jarColor)
+
+					c.getEfferentCouplings().each { coupling ->
+
+						if (!ignoreCoreJava || !coupling.getComponent().isCoreJava()) {
+							n.connectTo(classNodes[coupling.getComponent()]).setEdgeType(EdgeType.DIRECTED).setThickness((float) coupling.getCouplingCount())
+						}
+					}
+				}
+			}
+		}
+
+		writeGraph(gexf, fileName)
+	}
 
 	public static void writePackageGraph(DependencyContext context, String fileName, boolean ignoreCoreJava) {
 		Gexf gexf = new GexfImpl().setVisualization(true)
@@ -42,7 +93,7 @@ final class GexfUtils {
 
 		context.getJars().each { jar ->
 
-			Color jarColor = new ColorImpl(getRandom8Bit(), getRandom8Bit(), getRandom8Bit())
+			Color jarColor = newColor()
 
 			jar.getPackages().each { p ->
 
@@ -72,7 +123,7 @@ final class GexfUtils {
 		def jars = context.getJars()
 
 		jars.each { j ->
-			Color jarColor = new ColorImpl(getRandom8Bit(), getRandom8Bit(), getRandom8Bit())
+			Color jarColor = newColor()
 
 			jarNodes.put(j, graph.createNode().setLabel(j.getName()).setColor(jarColor).setSize(j.getAfferentCouplings().size()))
 		}
@@ -102,6 +153,10 @@ final class GexfUtils {
 		} finally {
 			out.close()
 		}
+	}
+
+	private static Color newColor() {
+		return new ColorImpl(getRandom8Bit(), getRandom8Bit(), getRandom8Bit())
 	}
 
 	private static int getRandom8Bit() {

@@ -5,7 +5,6 @@ import org.objectweb.asm.Attribute
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.FieldVisitor
 import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 
 import brewhot.weasel.DependencyContext
@@ -76,42 +75,46 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
 
 		/*
-		 * TODO: Do something useful with inner classes:
+		 * TODO: Do something useful with inner classes?
 		 * 		(1) the dependencies of private inner classes could be considered dependencies of the enclosing class
 		 * 		(2) public static nested classes could remain completely separate since they can be defined without an instance of the enclosing class
 		 */
 
-		boolean isPrivate = (access & Opcodes.ACC_PRIVATE) != 0
-		boolean isStatic = (access & Opcodes.ACC_STATIC) != 0
+		//		boolean isPrivate = (access & Opcodes.ACC_PRIVATE) != 0
+		//		boolean isStatic = (access & Opcodes.ACC_STATIC) != 0
+		//
+		//		if (isPrivate) println "$name is a private nested class of $visitedClassName"
+		//		if (isStatic) println "$name is a static nested class of $visitedClassName"
 
-		if (isPrivate) println "$name is a private nested class of $visitedClassName"
-		if (isStatic) println "$name is a static nested class of $visitedClassName"
-
-		//		println "->Visited inner class '$name' with outer $outerName and inner $innerName"
-
-		//addDependency(Type.getObjectType(name))
+		//		addDependency(Type.getObjectType(name))
 	}
 
 	@Override
 	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
 
 		/*
-		 * TODO: Do we care about the signature?  What is 'value' anyway?
+		 * TODO: Ignore synthetic fields?
 		 */
+		//		boolean isSynthetic = (access & Opcodes.ACC_SYNTHETIC) != 0
 
 		/*
 		 * Add field type
 		 */
 		addDependency(Type.getType(desc))
 
-		return new EmptyFieldVisitor();
+		/*
+		 * TODO: Analyze the signature for generic types
+		 */
+
+		return new FieldAnalyzer(context, visitedClassName);
 	}
 
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-		//List<String> argumentClassNames = Type.getArgumentTypes(desc).collect {"'$it.className'"}
 
-		//println "Visited method '$name' with return type '${Type.getReturnType(desc).className}' and argument type(s) [${argumentClassNames.join(', ')}] and signature $signature"
+		/*
+		 * TODO: Ignore synthetic methods?
+		 */
 
 		/*
 		 * Add the method return type
@@ -124,13 +127,17 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 		Type.getArgumentTypes(desc).each { addDependency(it) }
 
 		/*
+		 * TODO: Analyze the signature for generic types
+		 */
+
+		/*
 		 * Add each exception type
 		 */
 		exceptions.each {
 			addDependency(Type.getObjectType(it))
 		}
 
-		return new EmptyMethodVisitor();
+		return new MethodAnalyzer(context, visitedClassName);
 	}
 
 	@Override

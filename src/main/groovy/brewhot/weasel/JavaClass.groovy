@@ -8,4 +8,8 @@ class JavaClass extends AbstractComponent<JavaClass> {
 		super(name)
 		this.javaPackage = javaPackage
 	}
+
+	boolean isCoreJava() {
+		return javaPackage.isCoreJava()
+	}
 }

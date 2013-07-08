@@ -4,7 +4,7 @@ import org.apache.commons.lang3.Validate
 
 class Metrics {
 
-	private Component<?> component;
+	private Component component;
 
 	public Metrics (Component<?> component) {
 		Validate.notNull(component)
