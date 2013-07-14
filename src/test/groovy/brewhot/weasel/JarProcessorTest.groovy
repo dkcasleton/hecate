@@ -2,7 +2,9 @@ package brewhot.weasel
 
 import org.junit.Test
 
-import brewhot.weasel.gexf.GexfUtils
+import brewhot.weasel.gexf.GraphContext
+import brewhot.weasel.gexf.GraphType
+import brewhot.weasel.gexf.GraphWriter
 
 class JarProcessorTest {
 
@@ -33,10 +35,8 @@ class JarProcessorTest {
 				jarProcessor.process(jar)
 			}
 		}
-
-		GexfUtils.writeJarGraph(context, "spring-context-jars2.gexf")
-		GexfUtils.writePackageGraph(context, "spring-context-packages2.gexf", true)
-		GexfUtils.writeClassGraph(context, "spring-context-classes2.gexf", true)
+		
+		GraphWriter.writeGraphs(new GraphContext(dependencyContext: context, outputBaseName: "spring-context"))
 	}
 
 	private void printContents(DependencyContext context) {

@@ -1,11 +1,12 @@
 package brewhot.weasel.gexf
 
+import org.junit.Ignore
 import org.junit.Test
 
-import brewhot.weasel.DependencyContext;
-import brewhot.weasel.JarProcessor;
-import brewhot.weasel.gexf.GexfUtils
+import brewhot.weasel.DependencyContext
+import brewhot.weasel.JarProcessor
 
+@Ignore
 class GexfTest {
 
 	@Test
@@ -15,6 +16,6 @@ class GexfTest {
 		JarProcessor jarProcessor = new JarProcessor(context)
 		jarProcessor.process(jarPath)
 
-		GexfUtils.writePackageGraph(context, "gexf_test-color.gexf", true)
+//		GexfUtils.writePackageGraph(context, "gexf_test-color.gexf", true)
 	}
 }
