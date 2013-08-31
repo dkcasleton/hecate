@@ -8,7 +8,7 @@ class DependencyContext {
 
 	private Map<String, JavaJar> jars = [:].withDefault { jarName -> new JavaJar(jarName) }
 
-	private Map<String, JavaPackage> packages = [:].withDefault {packageName -> new JavaPackage(packageName) }
+	private Map<String, JavaPackage> packages = [:].withDefault { packageName -> new JavaPackage(packageName) }
 
 	private Map<JavaPackage, Collection<JavaJar>> packageAppearances = [:]
 

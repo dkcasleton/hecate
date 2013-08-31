@@ -14,7 +14,7 @@ class Coupling<T extends Component> {
 	}
 
 	public int getCouplingCount() {
-		return couplingCount
+		couplingCount
 	}
 
 	void increaseCoupling() {

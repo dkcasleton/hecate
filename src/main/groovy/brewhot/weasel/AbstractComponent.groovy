@@ -24,28 +24,26 @@ abstract class AbstractComponent<T extends AbstractComponent<T>> implements Comp
 
 	@Override
 	public Collection<Coupling<T>> getAfferentCouplings() {
-		return afferentCouplings.values()
+		afferentCouplings.values()
 	}
 
 	@Override
 	public Collection<Coupling<T>> getEfferentCouplings() {
-		return efferentCouplings.values()
+		efferentCouplings.values()
 	}
 
 	@Override
 	public void dependsOn(T component) {
-		if (component == null) {
-			return;
+		if (component != null) {
+			increaseCoupling efferentCouplings, component
+
+			component.responsibleFor this as T
 		}
-
-		increaseCoupling(efferentCouplings, component)
-
-		component.responsibleFor((T) this);
 	}
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("Ca", metrics.getAfferentCoupling()).append("Ce", metrics.getEfferentCoupling()).append("I", metrics.getInstability()).toString()
+		new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("Ca", metrics.getAfferentCoupling()).append("Ce", metrics.getEfferentCoupling()).append("I", metrics.getInstability()).toString()
 	}
 
 	/**
@@ -54,20 +52,18 @@ abstract class AbstractComponent<T extends AbstractComponent<T>> implements Comp
 	 * @param component
 	 *            the afferently coupled component.
 	 */
-	protected void responsibleFor(T component) {
-		if (component == null) {
-			return;
+	protected final void responsibleFor(T component) {
+		if (component != null) {
+			increaseCoupling afferentCouplings, component
 		}
-
-		increaseCoupling(afferentCouplings, component)
 	}
 
-	private void increaseCoupling(Map<String, Coupling<T>> couplings, T coupledComponent) {
+	private static void increaseCoupling(Map<String, Coupling<T>> couplings, T coupledComponent) {
 		Coupling<T> coupling = couplings[coupledComponent.getName()]
 
 		if (coupling == null) {
 			coupling = new Coupling<T>(coupledComponent)
-			couplings.put(coupledComponent.getName(), coupling)
+			couplings.put coupledComponent.getName(), coupling
 		}
 
 		coupling.increaseCoupling()

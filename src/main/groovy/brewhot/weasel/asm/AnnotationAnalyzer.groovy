@@ -1,9 +1,8 @@
-package brewhot.weasel.asm;
-
-import org.objectweb.asm.AnnotationVisitor
-import org.objectweb.asm.Type
+package brewhot.weasel.asm
 
 import brewhot.weasel.DependencyContext
+import org.objectweb.asm.AnnotationVisitor
+import org.objectweb.asm.Type
 
 public class AnnotationAnalyzer extends AbstractAnalyzer implements AnnotationVisitor {
 
@@ -28,9 +27,9 @@ public class AnnotationAnalyzer extends AbstractAnalyzer implements AnnotationVi
 		/*
 		 * Add annotation type
 		 */
-		addDependency(Type.getType(desc))
+		addDependency Type.getType(desc)
 
-		return this
+		this
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class AnnotationAnalyzer extends AbstractAnalyzer implements AnnotationVi
 		/*
 		 * Arrays of annotations?
 		 */
-		return this
+		this
 	}
 
 	@Override

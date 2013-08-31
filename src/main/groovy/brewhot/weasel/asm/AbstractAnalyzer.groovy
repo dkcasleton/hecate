@@ -14,9 +14,13 @@ abstract class AbstractAnalyzer {
 		this.context = context
 	}
 
-	protected void addDependency(Type javaType) {
+	protected final void addDependency(Type javaType) {
 		if (javaType.sort == Type.OBJECT) {
 			context.addDependency(visitedClassName, javaType.className)
 		}
+	}
+
+	protected final AnnotationAnalyzer newAnnotationAnalyzer() {
+		new AnnotationAnalyzer(context, visitedClassName)
 	}
 }

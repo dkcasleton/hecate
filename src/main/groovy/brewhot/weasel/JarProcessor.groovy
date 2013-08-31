@@ -17,7 +17,7 @@ class JarProcessor {
 	}
 
 	public void process(String jarPath) {
-		process(new File(jarPath))
+		process new File(jarPath)
 	}
 
 	public void process(File file) {
@@ -35,6 +35,6 @@ class JarProcessor {
 	}
 
 	private String getSimpleClassName(String jarClassName) {
-		return StringUtils.removeEnd(jarClassName, '.class').replaceAll("/", ".")
+		StringUtils.removeEnd(jarClassName, '.class').replaceAll("/", ".")
 	}
 }

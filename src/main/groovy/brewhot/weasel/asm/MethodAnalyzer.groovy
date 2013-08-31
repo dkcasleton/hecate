@@ -1,12 +1,12 @@
 package brewhot.weasel.asm
 
+import brewhot.weasel.DependencyContext
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Attribute
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Type
 
-import brewhot.weasel.DependencyContext
+import static org.objectweb.asm.Type.getType
 
 class MethodAnalyzer extends AbstractAnalyzer implements MethodVisitor {
 
@@ -17,29 +17,23 @@ class MethodAnalyzer extends AbstractAnalyzer implements MethodVisitor {
 
 	@Override
 	public AnnotationVisitor visitAnnotationDefault() {
-		return new AnnotationAnalyzer(context, visitedClassName)
+		newAnnotationAnalyzer()
 	}
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 
-		/*
-		 * Add annotation type
-		 */
-		addDependency(Type.getType(desc))
+		addDependency getType(desc)
 
-		return new AnnotationAnalyzer(context, visitedClassName);
+		newAnnotationAnalyzer()
 	}
 
 	@Override
 	public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
 
-		/*
-		 * Add annotation type
-		 */
-		addDependency(Type.getType(desc))
+		addDependency getType(desc)
 
-		return new AnnotationAnalyzer(context, visitedClassName);
+		newAnnotationAnalyzer()
 	}
 
 	@Override

@@ -11,12 +11,12 @@ class JavaJar extends AbstractComponent<JavaJar> {
 	}
 
 	void addPackage(JavaPackage p) {
-		Validate.notNull(p)
+		Validate.notNull p
 
-		packages.put(p.getName(), p)
+		packages.put p.getName(), p
 	}
 
 	Collection<JavaPackage> getPackages() {
-		return packages.values()
+		packages.values()
 	}
 }

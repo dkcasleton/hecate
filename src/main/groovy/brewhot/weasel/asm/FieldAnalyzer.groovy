@@ -20,12 +20,12 @@ public class FieldAnalyzer extends AbstractAnalyzer implements FieldVisitor {
 		/*
 		 * Add annotation type
 		 */
-		addDependency(Type.getType(desc))
+		addDependency Type.getType(desc)
 
 		/*
 		 * Check for other dependencies within the annotation (like other annotations)
 		 */
-		return new AnnotationAnalyzer(context, visitedClassName)
+		newAnnotationAnalyzer()
 	}
 
 	@Override

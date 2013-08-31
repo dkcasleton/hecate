@@ -23,15 +23,15 @@ class JavaPackage extends AbstractComponent<JavaPackage> {
 	 * @return the JavaClass representation of {@code className}.
 	 */
 	JavaClass getPackagedClass(String className) {
-		Validate.notBlank(className)
-		return classes[className]
+		Validate.notBlank className
+		classes[className]
 	}
 
 	Collection<JavaClass> getPackagedClasses() {
-		return classes.values()
+		classes.values()
 	}
 
 	boolean isCoreJava() {
-		return name.startsWith("java.") || name.startsWith("javax.")
+		name.startsWith("java.") || name.startsWith("javax.")
 	}
 }

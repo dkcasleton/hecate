@@ -32,13 +32,13 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 		/*
 		 * Add superclass type
 		 */
-		addDependency(Type.getObjectType(superName))
+		addDependency Type.getObjectType(superName)
 
 		/*
 		 * Add each interface type
 		 */
 		interfaces.each {
-			addDependency(Type.getObjectType(it))
+			addDependency Type.getObjectType(it)
 		}
 	}
 
@@ -58,12 +58,12 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 		/*
 		 * Add annotation type
 		 */
-		addDependency(Type.getType(desc))
+		addDependency Type.getType(desc)
 
 		/*
 		 * Check for other dependencies within the annotation (like other annotations)
 		 */
-		return new AnnotationAnalyzer(context, visitedClassName);
+		newAnnotationAnalyzer()
 	}
 
 	@Override
@@ -100,7 +100,7 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 		/*
 		 * Add field type
 		 */
-		addDependency(Type.getType(desc))
+		addDependency Type.getType(desc)
 
 		/*
 		 * TODO: Analyze the signature for generic types
@@ -119,12 +119,12 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 		/*
 		 * Add the method return type
 		 */
-		addDependency(Type.getReturnType(desc))
+		addDependency Type.getReturnType(desc)
 
 		/*
 		 * Add each argument type
 		 */
-		Type.getArgumentTypes(desc).each { addDependency(it) }
+		Type.getArgumentTypes(desc).each { addDependency it }
 
 		/*
 		 * TODO: Analyze the signature for generic types
@@ -134,7 +134,7 @@ class ClassAnalyzer extends AbstractAnalyzer implements ClassVisitor {
 		 * Add each exception type
 		 */
 		exceptions.each {
-			addDependency(Type.getObjectType(it))
+			addDependency Type.getObjectType(it)
 		}
 
 		return new MethodAnalyzer(context, visitedClassName);

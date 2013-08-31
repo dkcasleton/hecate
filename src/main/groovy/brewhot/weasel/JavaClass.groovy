@@ -10,6 +10,6 @@ class JavaClass extends AbstractComponent<JavaClass> {
 	}
 
 	boolean isCoreJava() {
-		return javaPackage.isCoreJava()
+		javaPackage.isCoreJava()
 	}
 }
